@@ -9,6 +9,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use backend\models\PoItem;
+use backend\models\Model;
 
 /**
  * PoController implements the CRUD actions for Po model.
@@ -67,6 +68,34 @@ class PoController extends Controller
         $model = new Po();
         $modelsPoItem = [new PoItem];
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            
+            $modelsPoItem = Model::createMultiple(PoItem::classname());
+            Model::loadMultiple($modelsPoItem, Yii::$app->request->post());
+
+            // validate all models
+            $valid = $model->validate();
+            $valid = Model::validateMultiple($modelsPoItem) && $valid;
+
+            if ($valid) {
+                $transaction = \Yii::$app->db->beginTransaction();
+                try {
+                    if ($flag = $model->save(false)) {
+                        foreach ($modelsPoItem as $modelPoItem) {
+                            $modelPoItem->po_id = $model->id;
+                            if (! ($flag = $modelPoItem->save(false))) {
+                                $transaction->rollBack();
+                                break;
+                            }
+                        }
+                    }
+                    if ($flag) {
+                        $transaction->commit();
+                        return $this->redirect(['view', 'id' => $model->id]);
+                    }
+                } catch (Exception $e) {
+                    $transaction->rollBack();
+                }
+            }
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render('create', [

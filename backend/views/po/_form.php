@@ -11,7 +11,7 @@ use wbraganca\dynamicform\DynamicFormWidget;
 
 <div class="po-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(['id' => 'dynamic-form']); ?>
 
     <?= $form->field($model, 'po_no')->textInput(['maxlength' => true]) ?>
 

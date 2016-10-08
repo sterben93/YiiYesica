@@ -30,7 +30,7 @@ class PoItem extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['po_item_no', 'quatity', 'po_id'], 'required'],
+            [['po_item_no', 'quatity'], 'required'],
             [['quatity'], 'number'],
             [['po_id'], 'integer'],
             [['po_item_no'], 'string', 'max' => 10],
