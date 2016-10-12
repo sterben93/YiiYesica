@@ -3,17 +3,16 @@
 namespace backend\controllers;
 
 use Yii;
-use backend\models\Branches;
-use backend\models\BranchesSeacrh;
+use backend\models\Direcciones;
+use backend\models\DireccionesSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\web\ForbiddenHttpException;
 
 /**
- * BranchesController implements the CRUD actions for Branches model.
+ * DireccionesController implements the CRUD actions for Direcciones model.
  */
-class BranchesController extends Controller
+class DireccionesController extends Controller
 {
     /**
      * @inheritdoc
@@ -31,12 +30,12 @@ class BranchesController extends Controller
     }
 
     /**
-     * Lists all Branches models.
+     * Lists all Direcciones models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new BranchesSeacrh();
+        $searchModel = new DireccionesSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -46,7 +45,7 @@ class BranchesController extends Controller
     }
 
     /**
-     * Displays a single Branches model.
+     * Displays a single Direcciones model.
      * @param integer $id
      * @return mixed
      */
@@ -58,31 +57,25 @@ class BranchesController extends Controller
     }
 
     /**
-     * Creates a new Branches model.
+     * Creates a new Direcciones model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        if(Yii::$app->user->can('create-branch')){
+        $model = new Direcciones();
 
-        }else{
-            throw new ForbiddenHttpException;
-        }
-        $model = new Branches();
-        if ($model->load(Yii::$app->request->post())) {
-            $model->branch_create_date= date('y-m-d h:m:s');
-            $model->save();
-            return $this->redirect(['view', 'id' => $model->branch_id]);
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id_Direccion]);
         } else {
-            return $this->renderAjax('create', [
+            return $this->render('create', [
                 'model' => $model,
             ]);
         }
     }
 
     /**
-     * Updates an existing Branches model.
+     * Updates an existing Direcciones model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -92,7 +85,7 @@ class BranchesController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->branch_id]);
+            return $this->redirect(['view', 'id' => $model->id_Direccion]);
         } else {
             return $this->render('update', [
                 'model' => $model,
@@ -101,7 +94,7 @@ class BranchesController extends Controller
     }
 
     /**
-     * Deletes an existing Branches model.
+     * Deletes an existing Direcciones model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -114,35 +107,18 @@ class BranchesController extends Controller
     }
 
     /**
-     * Finds the Branches model based on its primary key value.
+     * Finds the Direcciones model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Branches the loaded model
+     * @return Direcciones the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Branches::findOne($id)) !== null) {
+        if (($model = Direcciones::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
-        }
-    }
-
-    public function actionLists($id)
-    {
-        $countBranches = Branches::find()
-            ->where(['companies_company_id'=>$id])
-            ->count();
-        $branches = Branches::find()
-            ->where(['companies_company_id'=>$id])
-            ->all();
-        if ($countBranches>0) {
-            foreach ($branches as $brach) {
-                echo "<option value='".$brach->branch_id."'>".$brach->branch_name."</option>"; 
-            }
-        } else {
-            echo "<option>-</option>";    
         }
     }
 }

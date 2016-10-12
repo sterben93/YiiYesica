@@ -34,9 +34,13 @@ $this->params['breadcrumbs'][] = $this->title;
         echo "<div id='modalContent'></div>";
         Modal::end();
     ?>
+
+    <?php echo \nterms\pagesize\PageSize::widget(); ?>
+
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'filterSelector' => 'select[name="per-page"]',
         'rowOptions'=>function($model){
             return $model->branch_status=='inactive'?['class'=>'danger']:['class'=>'success'];
         },

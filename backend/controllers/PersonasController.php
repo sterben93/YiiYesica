@@ -3,17 +3,17 @@
 namespace backend\controllers;
 
 use Yii;
-use backend\models\Branches;
-use backend\models\BranchesSeacrh;
+use backend\models\Personas;
+use backend\models\PersonasSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\web\ForbiddenHttpException;
+use backend\models\Telefono;
 
 /**
- * BranchesController implements the CRUD actions for Branches model.
+ * PersonasController implements the CRUD actions for Personas model.
  */
-class BranchesController extends Controller
+class PersonasController extends Controller
 {
     /**
      * @inheritdoc
@@ -31,12 +31,12 @@ class BranchesController extends Controller
     }
 
     /**
-     * Lists all Branches models.
+     * Lists all Personas models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new BranchesSeacrh();
+        $searchModel = new PersonasSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -46,7 +46,7 @@ class BranchesController extends Controller
     }
 
     /**
-     * Displays a single Branches model.
+     * Displays a single Personas model.
      * @param integer $id
      * @return mixed
      */
@@ -58,31 +58,53 @@ class BranchesController extends Controller
     }
 
     /**
-     * Creates a new Branches model.
+     * Creates a new Personas model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        if(Yii::$app->user->can('create-branch')){
+        $model = new Personas();
+        $modelsTelefono = [new Telefono];
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $modelsTelefono = Model::createMultiple(Telefono::classname());
+            Model::loadMultiple($modelsTelefono, Yii::$app->request->post());
 
-        }else{
-            throw new ForbiddenHttpException;
-        }
-        $model = new Branches();
-        if ($model->load(Yii::$app->request->post())) {
-            $model->branch_create_date= date('y-m-d h:m:s');
-            $model->save();
-            return $this->redirect(['view', 'id' => $model->branch_id]);
+            // validate all models
+            $valid = $model->validate();
+            $valid = Model::validateMultiple($modelsTelefono) && $valid;
+
+            if ($valid) {
+                $transaction = \Yii::$app->db->beginTransaction();
+                try {
+                    if ($flag = $model->save(false)) {
+                        foreach ($modelsTelefono as $modelTelefono) {
+                            $modelTelefono->id_telefono = $model->id_personas;
+                            if (! ($flag = $modelTelefono->save(false))) {
+                                $transaction->rollBack();
+                                break;
+                            }
+                        }
+                    }
+                    if ($flag) {
+                        $transaction->commit();
+                        return $this->redirect(['view', 'id' => $model->id_personas]);
+                    }
+                } catch (Exception $e) {
+                    $transaction->rollBack();
+                }
+            }
+            return $this->redirect(['view', 'id' => $model->id_personas]);
         } else {
-            return $this->renderAjax('create', [
+            return $this->render('create', [
                 'model' => $model,
+                'modelsTelefono'=>$modelsTelefono,
             ]);
         }
     }
 
     /**
-     * Updates an existing Branches model.
+     * Updates an existing Personas model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -92,7 +114,7 @@ class BranchesController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->branch_id]);
+            return $this->redirect(['view', 'id' => $model->id_personas]);
         } else {
             return $this->render('update', [
                 'model' => $model,
@@ -101,7 +123,7 @@ class BranchesController extends Controller
     }
 
     /**
-     * Deletes an existing Branches model.
+     * Deletes an existing Personas model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -114,35 +136,18 @@ class BranchesController extends Controller
     }
 
     /**
-     * Finds the Branches model based on its primary key value.
+     * Finds the Personas model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Branches the loaded model
+     * @return Personas the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Branches::findOne($id)) !== null) {
+        if (($model = Personas::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
-        }
-    }
-
-    public function actionLists($id)
-    {
-        $countBranches = Branches::find()
-            ->where(['companies_company_id'=>$id])
-            ->count();
-        $branches = Branches::find()
-            ->where(['companies_company_id'=>$id])
-            ->all();
-        if ($countBranches>0) {
-            foreach ($branches as $brach) {
-                echo "<option value='".$brach->branch_id."'>".$brach->branch_name."</option>"; 
-            }
-        } else {
-            echo "<option>-</option>";    
         }
     }
 }
