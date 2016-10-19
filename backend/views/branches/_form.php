@@ -69,3 +69,25 @@ use kartik\select2\Select2;
     ?>
 
 </div>
+
+<?php
+    $script = "
+    $('form#{model->formName()}').on('beforeSubmit', function(e){
+        var \$form =$(this);
+        $.post(
+            \$form.attr('action'),
+            \$form.serialize()
+        ).done(function(result){
+            if(result == 1){
+                $(\$form).trigger('reset');
+                $.pjax.reload({container:'#branchesGrid'});
+            }else{
+                $('#menssage').html(result);
+            }
+        }).fail(function(){
+            console.log('server error');
+        });
+        return false;
+    });";
+    $this->registerJs($script);
+?>

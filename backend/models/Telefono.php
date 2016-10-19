@@ -11,6 +11,7 @@ use Yii;
  * @property string $contacto
  * @property string $typo_telefono
  * @property integer $id_persona
+ * @property integer $numero
  *
  * @property Personas $idPersona
  */
@@ -30,9 +31,9 @@ class Telefono extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['contacto', 'typo_telefono', 'id_persona'], 'required'],
-            [['typo_telefono'], 'string'],
-            [['id_persona'], 'integer'],
+            [['contacto', 'typo_telefono', 'id_persona', 'numero'], 'required'],
+            [['typo_telefono',  'numero'], 'string'],
+            [['id_persona',], 'integer'],
             [['contacto'], 'string', 'max' => 100],
             [['id_persona'], 'exist', 'skipOnError' => true, 'targetClass' => Personas::className(), 'targetAttribute' => ['id_persona' => 'id_personas']],
         ];
@@ -46,8 +47,9 @@ class Telefono extends \yii\db\ActiveRecord
         return [
             'id_telefono' => 'Id Telefono',
             'contacto' => 'Contacto',
-            'typo_telefono' => 'Typo Telefono',
+            'typo_telefono' => 'Tipo Telefono',
             'id_persona' => 'Id Persona',
+            'numero' => 'Numero de telefono',
         ];
     }
 

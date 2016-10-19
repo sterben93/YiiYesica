@@ -8,9 +8,9 @@ use yii\data\ActiveDataProvider;
 use backend\models\Telefono;
 
 /**
- * telefonoSearch represents the model behind the search form about `backend\models\Telefono`.
+ * TelefonoSearch represents the model behind the search form about `backend\models\Telefono`.
  */
-class telefonoSearch extends Telefono
+class TelefonoSearch extends Telefono
 {
     /**
      * @inheritdoc
@@ -18,7 +18,7 @@ class telefonoSearch extends Telefono
     public function rules()
     {
         return [
-            [['id_telefono', 'id_persona'], 'integer'],
+            [['id_telefono', 'id_persona', 'numero'], 'integer'],
             [['contacto', 'typo_telefono'], 'safe'],
         ];
     }
@@ -61,6 +61,7 @@ class telefonoSearch extends Telefono
         $query->andFilterWhere([
             'id_telefono' => $this->id_telefono,
             'id_persona' => $this->id_persona,
+            'numero' => $this->numero,
         ]);
 
         $query->andFilterWhere(['like', 'contacto', $this->contacto])

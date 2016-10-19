@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 
 /* @var $this yii\web\View */
-/* @var $searchModel backend\models\telefonoSearch */
+/* @var $searchModel backend\models\TelefonoSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Telefonos';
@@ -28,6 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'contacto',
             'typo_telefono',
             'id_persona',
+            'numero',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

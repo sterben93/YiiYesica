@@ -28,6 +28,12 @@ return [
         ],
         ],
     'components' => [
+        'reCaptcha' => [
+            'name' => 'reCaptcha',
+            'class' => 'himiklab\yii2\recaptcha\ReCaptcha',
+            'siteKey' => '6LfzIgkUAAAAAPyojLSm_IxM6MPfRSDn55yaE-HJ',
+            'secret' => '6LfzIgkUAAAAAP3ei6D2VwE4pePA-ZGH8yMAkC0_',
+        ],
         'request' => [
             'csrfParam' => '_csrf-backend',
         ],

@@ -30,9 +30,9 @@ class Correos extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['tipo', 'cuenta', 'id_persona'], 'required'],
+            [['id_correo', 'tipo', 'cuenta', 'id_persona'], 'required'],
+            [['id_correo', 'id_persona'], 'integer'],
             [['tipo'], 'string'],
-            [['id_persona'], 'integer'],
             [['cuenta'], 'string', 'max' => 150],
             [['id_persona'], 'exist', 'skipOnError' => true, 'targetClass' => Personas::className(), 'targetAttribute' => ['id_persona' => 'id_personas']],
         ];
@@ -45,8 +45,8 @@ class Correos extends \yii\db\ActiveRecord
     {
         return [
             'id_correo' => 'Id Correo',
-            'tipo' => 'Tipo',
-            'cuenta' => 'Cuenta',
+            'tipo' => 'Tipo de Correo',
+            'cuenta' => 'Correo',
             'id_persona' => 'Id Persona',
         ];
     }

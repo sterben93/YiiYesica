@@ -18,6 +18,7 @@ use Yii;
  */
 class Personas extends \yii\db\ActiveRecord
 {
+    public $reCaptcha;
     /**
      * @inheritdoc
      */
@@ -33,7 +34,9 @@ class Personas extends \yii\db\ActiveRecord
     {
         return [
             [['nombre_persona', 'ap_pat_persona', 'ap_mat_persona'], 'required'],
+            [['id_personas'],'integer'],
             [['nombre_persona', 'ap_pat_persona', 'ap_mat_persona'], 'string', 'max' => 50],
+            [['reCaptcha'], \himiklab\yii2\recaptcha\ReCaptchaValidator::className(), 'secret' => '6LfzIgkUAAAAAP3ei6D2VwE4pePA-ZGH8yMAkC0_']
         ];
     }
 
@@ -44,9 +47,9 @@ class Personas extends \yii\db\ActiveRecord
     {
         return [
             'id_personas' => 'Id Personas',
-            'nombre_persona' => 'Nombre Persona',
-            'ap_pat_persona' => 'Ap Pat Persona',
-            'ap_mat_persona' => 'Ap Mat Persona',
+            'nombre_persona' => 'Tu Nombre',
+            'ap_pat_persona' => 'Primer Apellido',
+            'ap_mat_persona' => 'Segundo Apellido',
         ];
     }
 

@@ -4,7 +4,7 @@ namespace backend\controllers;
 
 use Yii;
 use backend\models\Telefono;
-use backend\models\telefonoSearch;
+use backend\models\TelefonoSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -35,7 +35,7 @@ class TelefonoController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new telefonoSearch();
+        $searchModel = new TelefonoSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [

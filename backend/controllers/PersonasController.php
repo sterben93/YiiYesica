@@ -9,8 +9,12 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use backend\models\Telefono;
+use backend\models\Correos;
+use backend\models\Direcciones;
+use backend\models\RedesSociales;
+use backend\models\Model;
 
-/**
+/**use backend\models\Telefono;
  * PersonasController implements the CRUD actions for Personas model.
  */
 class PersonasController extends Controller
@@ -66,21 +70,58 @@ class PersonasController extends Controller
     {
         $model = new Personas();
         $modelsTelefono = [new Telefono];
+        $modelsCorreo = [new Correos];
+        $modelsDireccion = [new Direcciones];
+        $modelsRedesSociales = [new RedesSociales];
+        
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            
             $modelsTelefono = Model::createMultiple(Telefono::classname());
             Model::loadMultiple($modelsTelefono, Yii::$app->request->post());
 
-            // validate all models
-            $valid = $model->validate();
-            $valid = Model::validateMultiple($modelsTelefono) && $valid;
+            $modelsCorreo = Model::createMultiple(Correos::classname());
+            Model::loadMultiple($modelsCorreo, Yii::$app->request->post());
 
-            if ($valid) {
+            $modelsDireccion = Model::createMultiple(Direcciones::classname());
+            Model::loadMultiple($modelsDireccion, Yii::$app->request->post());
+            
+            $modelsRedesSociales = Model::createMultiple(RedesSociales::classname());
+            Model::loadMultiple($modelsRedesSociales, Yii::$app->request->post());
+            // validate all models
+
+            $valid = $model->validate();
+            
+            if (true) {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
                     if ($flag = $model->save(false)) {
                         foreach ($modelsTelefono as $modelTelefono) {
-                            $modelTelefono->id_telefono = $model->id_personas;
+                            $modelTelefono->id_persona = $model->id_personas;
                             if (! ($flag = $modelTelefono->save(false))) {
+                                $transaction->rollBack();
+                                break;
+                            }
+                        }
+
+                        foreach ($modelsCorreo as $modelCorreo) {
+                            $modelCorreo->id_persona = $model->id_personas;
+                            if (! ($flag = $modelCorreo->save(false))) {
+                                $transaction->rollBack();
+                                break;
+                            }
+                        }
+
+                        foreach ($modelsDireccion as $modelDireccion) {
+                            $modelDireccion->id_persona = $model->id_personas;
+                            if (! ($flag = $modelDireccion->save(false))) {
+                                $transaction->rollBack();
+                                break;
+                            }
+                        }
+
+                        foreach ($modelsRedesSociales as $modelRedesSociales) {
+                            $modelRedesSociales->id_persona = $model->id_personas;
+                            if (! ($flag = $modelRedesSociales->save(false))) {
                                 $transaction->rollBack();
                                 break;
                             }
@@ -94,11 +135,14 @@ class PersonasController extends Controller
                     $transaction->rollBack();
                 }
             }
-            return $this->redirect(['view', 'id' => $model->id_personas]);
+            return $this->redirect('view', ['id' => $model->id_personas]);
         } else {
             return $this->render('create', [
                 'model' => $model,
-                'modelsTelefono'=>$modelsTelefono,
+                'modelsTelefono'=>(empty($modelsTelefono)) ? [new Telefono] : $modelsTelefono,
+                'modelsCorreo'=>(empty($modelsCorreo)) ? [new Correos] : $modelsCorreo,
+                'modelsDireccion'=>(empty($modelsDireccion)) ? [new Direcciones] : $modelsDireccion,
+                'modelsRedesSociales'=>(empty($modelsRedesSociales)) ? [new RedesSociales] : $modelsRedesSociales,
             ]);
         }
     }
@@ -149,5 +193,10 @@ class PersonasController extends Controller
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
+    }
+
+    public function save($modelos)
+    {
+        
     }
 }

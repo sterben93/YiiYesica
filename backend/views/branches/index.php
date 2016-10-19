@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\bootstrap\Modal;
 use yii\helpers\Url;
+use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
 /* @var $searchModel backend\models\BranchesSeacrh */
@@ -36,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
     ?>
 
     <?php echo \nterms\pagesize\PageSize::widget(); ?>
-
+    <?php Pjax::begin(['id'=>'branchesGrid'])?>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -62,4 +63,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
+    <?php
+         Pjax::end();
+    ?>
 </div>

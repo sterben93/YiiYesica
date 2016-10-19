@@ -90,7 +90,7 @@ class PoController extends Controller
                     }
                     if ($flag) {
                         $transaction->commit();
-                        return $this->redirect(['view', 'id' => $model->id]);
+                        return $this->redirect(['view', 'id' => $model->id ]);
                     }
                 } catch (Exception $e) {
                     $transaction->rollBack();

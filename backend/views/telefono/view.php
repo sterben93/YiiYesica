@@ -32,6 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'contacto',
             'typo_telefono',
             'id_persona',
+            'numero',
         ],
     ]) ?>
 

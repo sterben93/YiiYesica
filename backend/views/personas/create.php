@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model backend\models\Personas */
 
-$this->title = 'Create Personas';
+$this->title = 'Perfil de Usuario';
 $this->params['breadcrumbs'][] = ['label' => 'Personas', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -16,7 +16,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= $this->render('_form', [
         'model' => $model,
-        'modelsTelefono' => $modelsTelefono
+        'modelsTelefono' => $modelsTelefono,      
+        'modelsCorreo'=> $modelsCorreo,
+        'modelsDireccion'=> $modelsDireccion,
+        'modelsRedesSociales'=> $modelsRedesSociales,
     ]) ?>
 
 </div>

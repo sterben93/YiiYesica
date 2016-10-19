@@ -42,8 +42,8 @@ class RedesSociales extends \yii\db\ActiveRecord
     {
         return [
             'id_red_social' => 'Id Red Social',
-            'tipo' => 'Tipo',
-            'cuenta' => 'Cuenta',
+            'tipo' => 'Tipo de Cuenta',
+            'cuenta' => 'Usuario',
             'id_persona' => 'Id Persona',
         ];
     }
