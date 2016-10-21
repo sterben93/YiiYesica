@@ -77,6 +77,9 @@ return [
             'encryption' => 'tls',
             ]
         ],
+        'MyComponent'=>[
+            'class'=>'backend\components\MyComponent'
+        ],
         /*
         'urlManager' => [
             'enablePrettyUrl' => true,
